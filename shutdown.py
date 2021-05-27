@@ -2,7 +2,8 @@
 #pip install pyTelegramBotAPI
 
 import telebot
-import os
+import threading
+from time import sleep
 
 telegram_API_Key = ''
 bot = telebot.TeleBot(telegram_API_Key)
@@ -25,7 +26,21 @@ def send_api(message):
         bot.send_message(chat_id, (f'non sei autorizzato a spegnermi il pc'))
 
 def main():
-    bot.polling()
+    while True:
+        try:
+            bot.polling(none_stop=True)
+        except Exception:
+            bot.stop_polling()
+        else:
+            bot.stop_polling()
+            break
+
+polling_thread = threading.Thread(target=main)
+polling_thread.daemon = True
+polling_thread.start()
 
 if __name__ == '__main__':
-    main()
+    a = 0
+    while True:
+        a += 1
+        sleep(120)
