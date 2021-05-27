@@ -17,11 +17,17 @@ def send_welcome(message):
     chat_id = message.chat.id
     author_id = message.from_user.id
     if str(author_id) == "" and str(message.from_user.first_name) == "" and str(message.from_user.last_name) == "" and str(message.from_user.username) == "":
-        bot.send_message(chat_id, """Ciao, spegni il computer con /spegni""")
+        try:
+            bot.send_message(chat_id, """Ciao, spegni il computer con /spegni""")
+        except Exception:
+            return
     elif author_id_prev == author_id:
         return
     else:
-        bot.send_message(chat_id, """no""")
+        try:
+            bot.send_message(chat_id, """non sei l'autore""")
+        except Exception:
+            return
     author_id_prev = author_id
 
 @bot.message_handler(commands=['spegni'])
@@ -30,14 +36,20 @@ def send_api(message):
     chat_id = message.chat.id
     author_id = message.from_user.id
     if str(author_id) == "" and str(message.from_user.first_name) == "" and str(message.from_user.last_name) == "" and str(message.from_user.username) == "":
-        bot.send_message(chat_id, (f'sto spegnendo, per spegnere /spegni'))
-        bot.stop_polling() 
+        try:
+            bot.send_message(chat_id, (f'sto spegnendo, per spegnere /spegni'))
+            bot.stop_polling() 
+        except Exception:
+            return
         import subprocess
         subprocess.call(["shutdown", "/s", "/t", "00"])
     elif author_id_prev == author_id:
         return
     else:
-        bot.send_message(chat_id, (f'non sei autorizzato a spegnermi il pc'))
+        try:
+            bot.send_message(chat_id, (f'non sei autorizzato a spegnermi il pc'))
+        except Exception:
+            return
     author_id_prev = author_id
 
 def main():
@@ -46,6 +58,7 @@ def main():
             bot.polling(none_stop=True)
         except Exception:
             bot.stop_polling()
+            break
         else:
             bot.stop_polling()
             break
@@ -53,8 +66,6 @@ def main():
 polling_thread = threading.Thread(target=main)
 polling_thread.daemon = True
 polling_thread.start()
-
-
 
 if __name__ == '__main__':
     a = 0
